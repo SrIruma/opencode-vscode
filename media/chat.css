@@ -216,6 +216,22 @@ button:disabled {
   background: var(--vscode-errorForeground, #f14c4c);
 }
 
+.revert-btn {
+  align-self: flex-start;
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-top: 4px;
+}
+
+.revert-btn:hover {
+  color: var(--vscode-errorForeground, #f14c4c);
+  border-color: currentColor;
+  background: transparent;
+}
+
 pre {
   background: var(--vscode-textCodeBlock-background, #2d2d2d);
   border-radius: 4px;

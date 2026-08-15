@@ -165,7 +165,16 @@ export class ChatPanel {
         break;
       case "revertMessage":
         if (this.sessionID && msg.messageID) {
-          await this.sdk.revert(this.sessionID, msg.messageID);
+          const ok = await this.sdk.revert(this.sessionID, msg.messageID);
+          if (ok) {
+            this.clearMessageState();
+            await this.renderHistory(this.sessionID);
+            await this.refreshSessions();
+            this.post({ type: "notice", payload: { message: "Changes reverted." } });
+            this.pushStatus();
+          } else {
+            this.post({ type: "error", payload: { message: "Failed to revert message." } });
+          }
         }
         break;
       case "referenceActiveFile":
