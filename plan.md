@@ -134,7 +134,7 @@ Detalles a explorar:
    - Un webview es lo "nativo" pero es un frontend entero que mantener.
    - Opción intermedia: empezar con TUI embebido y migrar a webview después.
 3. **¿Reemplazar la extensión oficial o ser un fork/alternativa?**
-4. **¿Publicar en el Marketplace o usarla solo localmente?** (`.vsix`)
+4. **¿Publicar en el Marketplace o usarla solo localmente?** (`.vsix`) — **Decidido:** NO Marketplace (hay que pagar 20$/mes). Solo repo + GitHub Releases (el workflow `release.yml` adjunta el `.vsix` a cada tag).
 5. **¿Soporte de Cursor / VSCodium?**
 
 ## 7. Riesgos y consideraciones

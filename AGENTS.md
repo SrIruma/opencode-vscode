@@ -60,7 +60,6 @@ nativo, notificaciones de permisos). La oficial sigue siendo el default seguro.
 | `yarn run build` | `package.json` |
 | `yarn run clean` | `package.json` |
 | `yarn run package` | `package.json` |
-| `yarn run publish` | `package.json` |
 | `yarn run test` | `package.json` |
 | `yarn run vscode:prepublish` | `package.json` |
 | `yarn run watch` | `package.json` |

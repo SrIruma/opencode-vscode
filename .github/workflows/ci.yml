@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v6
         with:
@@ -37,7 +37,7 @@ jobs:
       - name: Package .vsix
         run: yarn vsce package --no-dependencies -o opencode-vscode.vsix
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: vsix
           path: opencode-vscode.vsix

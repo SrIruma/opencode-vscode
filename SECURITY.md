@@ -29,5 +29,5 @@ We aim to:
 ## Supported versions
 
 Only the **latest release** receives security fixes. Please upgrade to the
-newest version from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=sriruma.opencode-vscode)
+newest version from the [GitHub Releases](https://github.com/SrIruma/opencode-vscode/releases)
 or [Releases](https://github.com/SrIruma/opencode-vscode/releases).

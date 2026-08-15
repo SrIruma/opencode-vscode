@@ -105,17 +105,20 @@ A dedicated CI guard (`.github/workflows/repoctx.yml`) runs `repoctx
 audit --check` on every push/PR and fails the build if the context file
 drifts.
 
-### Publishing to the VS Code Marketplace
+### Releases
 
-Not published yet. To enable it:
+This extension is **not** published to the VS Code Marketplace. Every tagged
+release publishes a `.vsix` artifact to the
+[GitHub Releases](https://github.com/SrIruma/opencode-vscode/releases) page:
 
-1. Register a publisher id: `yarn vsce create-publisher sriruma` (only once).
-2. Create an Azure DevOps PAT with **Marketplace > Manage** scope and store it
-   as the `VSCE_PAT` secret in the repository settings.
-3. Tag a release (`git tag v0.2.0 && git push origin v0.2.0`): the release
-   workflow publishes the extension to the Marketplace automatically. Without
-   the `VSCE_PAT` secret the step is skipped and only the GitHub Release is
-   created.
+1. Tag a release: `git tag v0.2.0 && git push origin v0.2.0`.
+2. The release workflow builds the extension, runs the tests and attaches the
+   `.vsix` to the GitHub Release (with auto-generated notes).
+3. Install it in VS Code from the command line:
+
+   ```bash
+   code --install-extension opencode-vscode-0.2.0.vsix
+   ```
 
 ## How it works
 
