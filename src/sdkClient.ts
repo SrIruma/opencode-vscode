@@ -16,6 +16,10 @@ export interface ModelRef {
   modelID: string;
 }
 
+export interface ModelInfo extends ModelRef {
+  name: string;
+}
+
 export type SessionChatPayload = { providerID: string; modelID: string; parts: Array<{ type: "text"; text: string }> };
 
 /**
@@ -41,6 +45,38 @@ export class SdkClient {
       return undefined;
     }
     return { providerID, modelID };
+  }
+
+  /** All models available across the configured providers. */
+  async listModels(): Promise<ModelInfo[]> {
+    const { data, error } = await this.client.config.providers();
+    if (error || !data) {
+      log("Failed to resolve providers:", error);
+      return [];
+    }
+    const models: ModelInfo[] = [];
+    for (const provider of data.providers ?? []) {
+      for (const [modelID, model] of Object.entries(provider.models ?? {})) {
+        models.push({
+          providerID: provider.id,
+          modelID,
+          name: model.name || modelID,
+        });
+      }
+    }
+    return models.sort((a, b) => {
+      const pa = a.providerID.localeCompare(b.providerID);
+      return pa !== 0 ? pa : a.name.localeCompare(b.name);
+    });
+  }
+
+  async deleteSession(sessionID: string): Promise<boolean> {
+    const { data, error } = await this.client.session.delete({ path: { id: sessionID } });
+    if (error) {
+      log(`Failed to delete session ${sessionID}:`, error);
+      return false;
+    }
+    return Boolean(data);
   }
 
   async listSessions(): Promise<Session[]> {

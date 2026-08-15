@@ -73,6 +73,19 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: default;
+}
+
+#model-label.enabled {
+  color: var(--accent-fg);
+  background: var(--accent);
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+#model-label.enabled:hover {
+  background: var(--vscode-button-hoverBackground, #1177bb);
 }
 
 button {
@@ -227,6 +240,16 @@ code:not(pre code) {
 .error-banner {
   color: var(--vscode-errorForeground, #f14c4c);
   border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+.notice-banner {
+  color: var(--vscode-foreground, #d4d4d4);
+  background: var(--user-bg);
+  border: 1px solid var(--border);
   border-radius: 4px;
   padding: 6px 10px;
   margin: 4px 0;

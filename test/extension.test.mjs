@@ -90,3 +90,24 @@ test("sdk can list sessions and resolve a default model", { skip: !opencodeAvail
   const sessions = await sdk.listSessions();
   assert.ok(Array.isArray(sessions));
 });
+
+test("sdk can list models from the configured providers", { skip: !opencodeAvailable }, async () => {
+  const sdk = ext.__internals.sdk;
+  const models = await sdk.listModels();
+  assert.ok(models.length > 0, "expected at least one configured model");
+  for (const m of models) {
+    assert.ok(m.providerID, "model missing providerID");
+    assert.ok(m.modelID, "model missing modelID");
+    assert.ok(m.name, "model missing name");
+  }
+});
+
+test("sdk can create and delete a session", { skip: !opencodeAvailable }, async () => {
+  const sdk = ext.__internals.sdk;
+  const session = await sdk.createSession();
+  assert.ok(session?.id, "expected a created session");
+  const deleted = await sdk.deleteSession(session.id);
+  assert.equal(deleted, true);
+  const remaining = await sdk.listSessions();
+  assert.ok(!remaining.some((s) => s.id === session.id), "deleted session should be gone");
+});

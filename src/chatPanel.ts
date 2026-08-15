@@ -4,11 +4,12 @@ import type { SdkClient } from "./sdkClient";
 import { buildContextPrompt, getActiveEditorContext } from "./context";
 import { PermissionHandler } from "./permissions";
 import { openSessionDiff, type OriginalContentProvider } from "./diffs";
-import type { PanelMessage, ServerState, WebviewRequest } from "./protocol";
+import type { ModelSummary, PanelMessage, ServerState, WebviewRequest } from "./protocol";
 import { summarizeSessions } from "./protocol";
 
 const VIEW_TYPE = "opencode.chat";
 const ASSISTANT_ROLE = "assistant";
+const MODEL_STATE_KEY = "chat.selectedModel";
 
 /**
  * Owns the chat webview: renders messages, streams assistant output from the
@@ -22,6 +23,7 @@ export class ChatPanel {
   private running = false;
   private serverStatus: ServerState = "connecting";
   private modelLabel = "";
+  private models: ModelSummary[] = [];
 
   private readonly assistantIDs = new Set<string>();
   private readonly textParts = new Map<string, Map<string, string>>();
@@ -81,6 +83,7 @@ export class ChatPanel {
 
   private async init(): Promise<void> {
     await this.resolveModel();
+    await this.loadModels();
     const sessions = await this.sdk.listSessions();
     this.post({ type: "sessions", payload: summarizeSessions(sessions) });
 
@@ -101,6 +104,12 @@ export class ChatPanel {
     if (this.model) {
       return;
     }
+    const stored = this.context.globalState.get<ModelSummary | undefined>(MODEL_STATE_KEY);
+    if (stored?.providerID && stored?.modelID) {
+      this.model = stored;
+      this.modelLabel = `${stored.providerID}/${stored.modelID}`;
+      return;
+    }
     const defaultModel = await this.sdk.defaultModel();
     if (defaultModel) {
       this.model = defaultModel;
@@ -108,6 +117,12 @@ export class ChatPanel {
     } else {
       this.modelLabel = "no model configured";
     }
+  }
+
+  private async loadModels(): Promise<void> {
+    const all = await this.sdk.listModels();
+    this.models = all.map((m) => ({ providerID: m.providerID, modelID: m.modelID, name: m.name }));
+    this.post({ type: "models", payload: this.models });
   }
 
   private async handleRequest(msg: WebviewRequest): Promise<void> {
@@ -124,8 +139,17 @@ export class ChatPanel {
       case "selectSession":
         await this.selectSession(msg.id);
         break;
+      case "deleteSession":
+        await this.deleteSession(msg.id);
+        break;
       case "listSessions":
         await this.refreshSessions();
+        break;
+      case "listModels":
+        await this.loadModels();
+        break;
+      case "selectModel":
+        await this.selectModel(msg.providerID, msg.modelID);
         break;
       case "stop":
         await this.stop();
@@ -242,6 +266,35 @@ export class ChatPanel {
     this.clearMessageState();
     await this.renderHistory(id);
     await this.refreshSessions();
+    this.pushStatus();
+  }
+
+  private async selectModel(providerID: string, modelID: string): Promise<void> {
+    this.model = { providerID, modelID };
+    this.modelLabel = `${providerID}/${modelID}`;
+    void this.context.globalState.update(MODEL_STATE_KEY, { providerID, modelID, name: modelID });
+    this.pushStatus();
+  }
+
+  private async deleteSession(id: string): Promise<void> {
+    const ok = await this.sdk.deleteSession(id);
+    if (!ok) {
+      this.post({ type: "error", payload: { message: `Failed to delete session.` } });
+      return;
+    }
+    if (id === this.sessionID) {
+      this.sessionID = undefined;
+      this.sessionTitle = "";
+      this.clearMessageState();
+      const session = await this.sdk.createSession();
+      if (session) {
+        this.sessionID = session.id;
+        this.sessionTitle = session.title;
+      }
+      await this.renderHistory(this.sessionID ?? id);
+    }
+    await this.refreshSessions();
+    this.post({ type: "notice", payload: { message: `Deleted session.` } });
     this.pushStatus();
   }
 
@@ -411,7 +464,7 @@ export class ChatPanel {
     <span id="session-title">OpenCode</span>
   </div>
   <div id="header-actions">
-    <span id="model-label" title="Model"></span>
+    <button id="model-label" title="Model"></button>
     <button id="btn-sessions" title="Sessions">${SVG_SESSIONS}</button>
     <button id="btn-new" title="New session">${SVG_NEW}</button>
     <button id="btn-stop" title="Stop" disabled>${SVG_STOP}</button>
