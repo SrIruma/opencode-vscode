@@ -14,6 +14,7 @@ el servidor opencode.
 
 ## Stack y decisiones que no voy a renegar
 
+- Gestor de paquetes: **Yarn 4 (Berry)** vía corepack (`"packageManager": "yarn@4.18.0"`). Los scripts se corren con `yarn <script>`; no se usa npm.
 - TypeScript estricto, empaquetado con esbuild en un único bundle CJS de salida (con `vscode` como dependencia externa).
 - Cliente del servidor vía el paquete SDK @opencode-ai/sdk (solo ESM, imports sin extensión): siempre bundle, nunca `node` plano.
 - `OpencodeClient` no se exporta del SDK → uso `ReturnType<typeof createOpencodeClient>`.
@@ -37,7 +38,7 @@ el servidor opencode.
 
 - Cambios por ramas feat o fix → PR → merge a `main`. Commits pequeños, atómicos y con mensajes claros.
 - No fuerzo archivos ignorados (el gitignore global del usuario ignora la carpeta de configuración del editor) ni subo secretos.
-- Antes de dar una tarea por cerrada: `npm test` en verde y el contexto saneado (ver abajo).
+- Antes de dar una tarea por cerrada: `yarn test` en verde y el contexto saneado (ver abajo).
 
 ## Sanitización con repoctx (siempre)
 
@@ -50,13 +51,13 @@ el servidor opencode.
 
 | Command | Source |
 |---|---|
-| `npm run build` | `package.json` |
-| `npm run clean` | `package.json` |
-| `npm run package` | `package.json` |
-| `npm run publish` | `package.json` |
-| `npm run test` | `package.json` |
-| `npm run vscode:prepublish` | `package.json` |
-| `npm run watch` | `package.json` |
+| `yarn run build` | `package.json` |
+| `yarn run clean` | `package.json` |
+| `yarn run package` | `package.json` |
+| `yarn run publish` | `package.json` |
+| `yarn run test` | `package.json` |
+| `yarn run vscode:prepublish` | `package.json` |
+| `yarn run watch` | `package.json` |
 
 ## Modules
 

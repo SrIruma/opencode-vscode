@@ -8,6 +8,7 @@
     "name": "Carlos Espinoza"
   },
   "license": "MIT",
+  "packageManager": "yarn@4.18.0",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -122,9 +123,9 @@
     "build": "node esbuild.js",
     "watch": "node esbuild.js --watch",
     "clean": "rm -rf dist *.vsix .test-out",
-    "vscode:prepublish": "npm run build",
+    "vscode:prepublish": "yarn build",
     "test": "node scripts/test.mjs",
-    "package": "npm run clean && npm run build && vsce package --no-dependencies",
+    "package": "yarn clean && yarn build && yarn vsce package --no-dependencies",
     "publish": "vsce publish"
   },
   "dependencies": {

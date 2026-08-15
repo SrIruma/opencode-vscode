@@ -17,19 +17,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          cache: yarn
+
+      - name: Enable corepack (Yarn)
+        run: corepack enable
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --immutable
 
       - name: Run tests
-        run: npm test
+        run: yarn test
 
       - name: Build extension
-        run: npm run build
+        run: yarn build
 
       - name: Package .vsix
-        run: npx vsce package --no-dependencies -o opencode-vscode-${GITHUB_REF_NAME#v}.vsix
+        run: yarn vsce package --no-dependencies -o opencode-vscode-${GITHUB_REF_NAME#v}.vsix
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -41,4 +44,4 @@ jobs:
         if: env.VSCE_PAT != ''
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-        run: npx vsce publish -p "$VSCE_PAT"
+        run: yarn vsce publish -p "$VSCE_PAT"

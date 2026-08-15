@@ -2,7 +2,7 @@ import { build } from "esbuild";
 import { mkdirSync, rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
-// The integration tests require dist/extension.js, so make `npm test`
+// The integration tests require dist/extension.js, so make `yarn test`
 // self-contained by building the extension first.
 const buildExt = spawnSync("node", ["esbuild.js"], { stdio: "inherit" });
 if (buildExt.status !== 0) {

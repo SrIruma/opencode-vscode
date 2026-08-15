@@ -66,9 +66,9 @@ folder as the working directory.
 ## Development
 
 ```bash
-npm install
-npm run watch    # build in watch mode
-npm run package  # produce a .vsix
+yarn install
+yarn watch    # build in watch mode
+yarn package  # produce a .vsix
 ```
 
 Run the extension from the Run and Debug panel (F5) — a debug host will launch

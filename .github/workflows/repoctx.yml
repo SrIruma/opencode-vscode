@@ -20,7 +20,7 @@ jobs:
 
       - name: Check context files with repoctx
         run: |
-          VERSION=v0.5.0
+          VERSION=v0.6.0
           curl -sSLo /tmp/repoctx \
             "https://github.com/SrIruma/repoctx/releases/download/${VERSION}/repoctx_linux_amd64"
           chmod +x /tmp/repoctx
