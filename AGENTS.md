@@ -53,6 +53,7 @@ el servidor opencode.
 | `npm run build` | `package.json` |
 | `npm run clean` | `package.json` |
 | `npm run package` | `package.json` |
+| `npm run publish` | `package.json` |
 | `npm run test` | `package.json` |
 | `npm run vscode:prepublish` | `package.json` |
 | `npm run watch` | `package.json` |
