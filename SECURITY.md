@@ -30,4 +30,4 @@ We aim to:
 
 Only the **latest release** receives security fixes. Please upgrade to the
 newest version from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=sriruma.opencode-vscode)
-or [Releases](https://github.com/SrIruma/opencode-vscode-extension/releases).
+or [Releases](https://github.com/SrIruma/opencode-vscode/releases).

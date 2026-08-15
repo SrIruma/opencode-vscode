@@ -140,7 +140,7 @@ underlying APIs.
 - [Changelog](CHANGELOG.md) — release history.
 - [Code of Conduct](CODE_OF_CONDUCT.md) — community guidelines.
 - [Security](SECURITY.md) — how to report a vulnerability.
-- [Issues](https://github.com/SrIruma/opencode-vscode-extension/issues) — report
+- [Issues](https://github.com/SrIruma/opencode-vscode/issues) — report
   bugs and request features.
 
 ## Support
