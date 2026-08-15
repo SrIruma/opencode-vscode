@@ -17,6 +17,16 @@ const EVENT_RECONNECT_DELAY_MS = 3000;
 const HEALTH_TIMEOUT_MS = 2500;
 const SPAWN_TIMEOUT_MS = 20000;
 
+const isWindows = process.platform === "win32";
+
+/** Resolves the opencode binary name for the current platform. */
+function resolveBinary(binaryPath: string): string {
+  if (!isWindows) {
+    return binaryPath;
+  }
+  return /\.(exe|cmd|bat)$/i.test(binaryPath) ? binaryPath : `${binaryPath}.exe`;
+}
+
 /**
  * Manages the lifecycle of the opencode server.
  *
@@ -119,11 +129,13 @@ export class ServerManager {
     }
 
     const args = ["serve", "--port", String(cfg.port), "--hostname", "127.0.0.1", ...cfg.startArgs];
+    const binary = resolveBinary(cfg.binaryPath);
 
-    log(`Spawning "${cfg.binaryPath} ${args.join(" ")}" in ${root}`);
-    const proc = spawn(cfg.binaryPath, args, {
+    log(`Spawning "${binary} ${args.join(" ")}" in ${root}`);
+    const proc = spawn(binary, args, {
       cwd: root,
       env: { ...process.env },
+      windowsHide: true,
     });
 
     proc.stdout?.on("data", (d) => log(`[server] ${String(d).trimEnd()}`));
@@ -231,7 +243,7 @@ export class ServerManager {
     this.stopEventStream();
     if (this.process && this.spawnedByUs) {
       log("Stopping opencode server started by the extension.");
-      this.process.kill("SIGTERM");
+      this.process.kill();
     }
   }
 }
