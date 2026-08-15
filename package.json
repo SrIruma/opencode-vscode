@@ -124,7 +124,8 @@
     "clean": "rm -rf dist *.vsix .test-out",
     "vscode:prepublish": "npm run build",
     "test": "node scripts/test.mjs",
-    "package": "npm run clean && npm run build && vsce package --no-dependencies"
+    "package": "npm run clean && npm run build && vsce package --no-dependencies",
+    "publish": "vsce publish"
   },
   "dependencies": {
     "@opencode-ai/sdk": "^0.3.10"
