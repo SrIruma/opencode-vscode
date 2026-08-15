@@ -40,6 +40,26 @@ nativo, notificaciones de permisos). La oficial sigue siendo el default seguro.
 - `src/permissions.ts` — `permission.updated` → notificaciones de VS Code (once, always o reject).
 - `src/context.ts`, `src/protocol.ts`, `src/config.ts`, `src/logger.ts` — contexto del editor, protocolo webview, configuración y log.
 
+## Estado y próximos pasos
+
+Construido y funcional: chat webview con streaming SSE, contexto del editor,
+diffs nativos + highlight de cambios en vivo (`Show Changes` / `Clear Change
+Highlights`), permisos como notificaciones, gestión del ciclo de vida del
+server y 18 tests unitarios. Distribución: **solo GitHub Releases** — tagear
+(`git tag vX.Y.Z && git push origin vX.Y.Z`) publica el `.vsix` vía
+`release.yml`. **No** se publica en el VS Code Marketplace (hay que pagar).
+
+Decisiones que estaban en `plan.md` (archivo ya eliminado):
+- Remote-WSL como objetivo principal; Windows/Linux nativos también funcionan.
+- UI en webview propio (no TUI embebido).
+- Alternativa experimental, no compite con la oficial.
+
+Pendiente (trackeado en issues de GitHub):
+- Bump `softprops/action-gh-release@v2` → v3 (runtime node24 deprecado).
+- Verificar compatibilidad con Cursor / VSCodium.
+- Aceptar/descartar los cambios por archivo en el diff.
+- Auth opcional del server (`OPENCODE_SERVER_PASSWORD`).
+
 ## Cómo trabajo (mis reglas)
 
 - Cambios por ramas feat o fix → PR → merge a `main`. Commits pequeños, atómicos y con mensajes claros.
