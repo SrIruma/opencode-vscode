@@ -71,6 +71,20 @@ npm run package  # produce a .vsix
 Run the extension from the Run and Debug panel (F5) — a debug host will launch
 with the extension loaded.
 
+### Keeping `AGENTS.md` truthful
+
+This repository uses [repoctx](https://github.com/SrIruma/repoctx) to keep the
+factual sections of `AGENTS.md` (commands, module structure) in sync with the
+code:
+
+```bash
+repoctx generate   # regenerate the sections between the repoctx markers
+repoctx audit      # detect ghost commands and stale paths (exit 0 = healthy)
+```
+
+CI runs `repoctx audit --check` on every push/PR and fails the build if the
+context file drifts.
+
 ## How it works
 
 OpenCode is client-server by design: the TUI is just a client of `opencode
