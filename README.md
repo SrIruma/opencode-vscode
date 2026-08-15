@@ -7,7 +7,10 @@ context, native diffs, and full access to the VS Code API.
 
 Built for **WSL / Remote - WSL**: the extension runs inside the WSL extension
 host, so it can spawn and talk to the `opencode` server directly — no
-`wsl.exe`, no networking gymnastics, no opening the terminal every time.
+`wsl.exe`, no networking gymnastics, no opening the terminal every time. It
+also runs natively on Windows (and any Linux host): the server binary is
+resolved with the platform-specific extension and spawned with the workspace
+folder as the working directory.
 
 ## Features
 

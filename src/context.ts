@@ -8,6 +8,12 @@ export interface EditorContext {
 /**
  * Captures the active editor state: the current file and the selected text
  * (with line numbers), ready to be injected into a prompt.
+ *
+ * Path handling: on a native Windows host the editor produces Windows paths
+ * (C:\...) and the server spawned by the extension also runs on Windows, so
+ * no conversion is needed. On WSL/Linux both sides already speak the same
+ * paths. Path mapping between hosts (e.g. Windows editor against a WSL
+ * server) is intentionally unsupported.
  */
 export function getActiveEditorContext(): EditorContext {
   const editor = vscode.window.activeTextEditor;
