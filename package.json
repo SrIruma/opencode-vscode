@@ -1,0 +1,139 @@
+{
+  "name": "opencode-vscode",
+  "displayName": "OpenCode",
+  "description": "Native OpenCode AI coding agent inside VS Code. Run sessions, stream responses, apply changes and control the editor directly from the opencode server.",
+  "version": "0.1.0",
+  "publisher": "sriruma",
+  "author": {
+    "name": "Carlos Espinoza"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "AI",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "ai",
+    "opencode",
+    "agent",
+    "coding",
+    "assistant"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SrIruma/opencode-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SrIruma/opencode-vscode/issues"
+  },
+  "homepage": "https://github.com/SrIruma/opencode-vscode",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "opencode.openChat",
+        "title": "OpenCode: Open Chat",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "opencode.newSession",
+        "title": "OpenCode: New Session"
+      },
+      {
+        "command": "opencode.sendSelection",
+        "title": "OpenCode: Send Selection to Chat"
+      },
+      {
+        "command": "opencode.referenceActiveFile",
+        "title": "OpenCode: Reference Active File"
+      },
+      {
+        "command": "opencode.stopSession",
+        "title": "OpenCode: Stop Session"
+      },
+      {
+        "command": "opencode.showDiff",
+        "title": "OpenCode: Show Changes"
+      },
+      {
+        "command": "opencode.reconnectServer",
+        "title": "OpenCode: Reconnect Server"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "opencode.referenceActiveFile",
+          "group": "opencode@1"
+        },
+        {
+          "command": "opencode.sendSelection",
+          "group": "opencode@2"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "opencode.referenceActiveFile",
+          "group": "opencode@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "OpenCode",
+      "properties": {
+        "opencode.server.port": {
+          "type": "number",
+          "default": 4096,
+          "description": "Port for the opencode server. The extension will connect to an existing server on this port or start one."
+        },
+        "opencode.server.autoStart": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically start (or connect to) the opencode server when the extension activates."
+        },
+        "opencode.server.binaryPath": {
+          "type": "string",
+          "default": "opencode",
+          "description": "Path to the opencode binary (or just the name if it is on PATH)."
+        },
+        "opencode.server.startArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Extra CLI arguments passed to `opencode serve`."
+        },
+        "opencode.chat.autoRevealPanel": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically reveal the chat panel when sending a message from the editor."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "clean": "rm -rf dist *.vsix .test-out",
+    "vscode:prepublish": "npm run build",
+    "test": "node scripts/test.mjs",
+    "package": "npm run clean && npm run build && vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "@opencode-ai/sdk": "^0.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.1",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.5.0"
+  }
+}

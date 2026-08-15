@@ -1,0 +1,21 @@
+# Build
+dist/
+dist-types/
+.test-out/
+*.vsix
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.vscode-test/
+*.code-workspace
+.DS_Store
+
+# Local env / secrets — never commit
+.env
+.env.*

@@ -1,0 +1,11 @@
+.vscode/**
+.vscode-test/**
+dist-types/**
+node_modules/**
+src/**
+.git/**
+.gitignore
+**/*.map
+**/.DS_Store
+*.vsix
+!dist/extension.js
