@@ -1,0 +1,27 @@
+name: repoctx
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repoctx-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check context files with repoctx
+        run: |
+          VERSION=v0.5.0
+          curl -sSLo /tmp/repoctx \
+            "https://github.com/SrIruma/repoctx/releases/download/${VERSION}/repoctx_linux_amd64"
+          chmod +x /tmp/repoctx
+          /tmp/repoctx audit --check
