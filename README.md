@@ -93,7 +93,7 @@ drifts.
 
 Not published yet. To enable it:
 
-1. Register a publisher id: `npx vsce create-publisher sriruma` (only once).
+1. Register a publisher id: `yarn vsce create-publisher sriruma` (only once).
 2. Create an Azure DevOps PAT with **Marketplace > Manage** scope and store it
    as the `VSCE_PAT` secret in the repository settings.
 3. Tag a release (`git tag v0.2.0 && git push origin v0.2.0`): the release
@@ -121,6 +121,24 @@ stream. This extension is another client:
 
 See https://opencode.ai/docs/server/ and https://opencode.ai/docs/sdk/ for the
 underlying APIs.
+
+## Community
+
+- [Contributing](CONTRIBUTING.md) — how to set up, branch, commit, and test.
+- [Changelog](CHANGELOG.md) — release history.
+- [Code of Conduct](CODE_OF_CONDUCT.md) — community guidelines.
+- [Security](SECURITY.md) — how to report a vulnerability.
+- [Issues](https://github.com/SrIruma/opencode-vscode-extension/issues) — report
+  bugs and request features.
+
+## Support
+
+[![Donate](https://img.shields.io/badge/Donate-BTC%20%7C%20USDT-e6007a?style=for-the-badge)](docs/donate.md)
+
+opencode-vscode is free and MIT-licensed. If it saves you time, consider a
+small donation in BTC or USDT (TRC-20) — see [docs/donate.md](docs/donate.md)
+for the addresses and network details. Donations are optional and buy nothing;
+they just keep the project going.
 
 ## License
 
