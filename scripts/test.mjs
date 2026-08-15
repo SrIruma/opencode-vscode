@@ -2,6 +2,13 @@ import { build } from "esbuild";
 import { mkdirSync, rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
+// The integration tests require dist/extension.js, so make `npm test`
+// self-contained by building the extension first.
+const buildExt = spawnSync("node", ["esbuild.js"], { stdio: "inherit" });
+if (buildExt.status !== 0) {
+  process.exit(buildExt.status ?? 1);
+}
+
 rmSync(".test-out", { recursive: true, force: true });
 mkdirSync(".test-out", { recursive: true });
 
