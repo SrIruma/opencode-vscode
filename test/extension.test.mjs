@@ -1,6 +1,8 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
+import { spawnSync } from "node:child_process";
+import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { vscode as stub, getStubState } from "./stub/vscode.mjs";
@@ -8,6 +10,31 @@ import { vscode as stub, getStubState } from "./stub/vscode.mjs";
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, "..");
+
+// Whether a real opencode server is reachable (local dev). CI has none, so the
+// server-dependent assertions are skipped there.
+function tcpCheck(host, port, timeout = 500) {
+  return new Promise((resolve) => {
+    const sock = net.connect({ host, port });
+    const done = (ok) => {
+      sock.removeAllListeners();
+      sock.destroy();
+      resolve(ok);
+    };
+    sock.once("connect", () => done(true));
+    sock.once("error", () => done(false));
+    setTimeout(() => done(false), timeout);
+  });
+}
+
+const opencodeAvailable = await (async () => {
+  if (await tcpCheck("127.0.0.1", 4096)) return true;
+  try {
+    return spawnSync("which", ["opencode"], { stdio: "pipe" }).status === 0;
+  } catch {
+    return false;
+  }
+})();
 
 // Pretend `vscode` is resolvable from the extension bundle.
 const Module = require("module");
@@ -51,11 +78,11 @@ test("activate() registers all commands", () => {
   }
 });
 
-test("autoStart connects to an existing opencode server", () => {
+test("autoStart connects to an existing opencode server", { skip: !opencodeAvailable }, () => {
   assert.equal(ext.__internals.server.currentStatus, "connected");
 });
 
-test("sdk can list sessions and resolve a default model", async () => {
+test("sdk can list sessions and resolve a default model", { skip: !opencodeAvailable }, async () => {
   const sdk = ext.__internals.sdk;
   const model = await sdk.defaultModel();
   assert.ok(model?.providerID, "expected a default provider");
