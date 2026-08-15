@@ -30,7 +30,7 @@ extensión se ejecuta en el extension host remoto.
 ## Convenciones
 
 - Nuevas features y fixes van por ramas feat/fix → PR → merge a `main`.
-- No forzar archivos ignorados (el gitignore global del usuario ignora `.vscode/`).
+- No forzar archivos ignorados (el gitignore global del usuario ignora la carpeta de configuración del editor).
 - No subir secretos.
 
 <!-- repoctx:start -->
