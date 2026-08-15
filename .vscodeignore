@@ -3,8 +3,11 @@
 dist-types/**
 node_modules/**
 src/**
+scripts/**
+test/**
 .git/**
 .gitignore
+.github/**
 **/*.map
 **/.DS_Store
 *.vsix
