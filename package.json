@@ -2,7 +2,7 @@
   "name": "opencode-vscode",
   "displayName": "OpenCode",
   "description": "Native OpenCode AI coding agent inside VS Code. Run sessions, stream responses, apply changes and control the editor directly from the opencode server.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "sriruma",
   "author": {
     "name": "Carlos Espinoza"
