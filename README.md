@@ -5,6 +5,14 @@ AI coding agent. It runs OpenCode as a **citizen of the editor** instead of a
 terminal session: you get a chat panel, streaming responses, editor-aware
 context, native diffs, and full access to the VS Code API.
 
+> **Status: experimental alternative.** This extension is **not** the official
+> OpenCode IDE extension and does not try to compete with it. It is an
+> independent, experimental implementation built on top of the official server
+> and SDK, with the goal of a more complete and native-in-editor experience:
+> chat in a webview, native diff review, editor-aware context and permission
+> prompts as VS Code notifications. Expect rough edges; the official extension
+> remains the safe default.
+
 Built for **WSL / Remote - WSL**: the extension runs inside the WSL extension
 host, so it can spawn and talk to the `opencode` server directly — no
 `wsl.exe`, no networking gymnastics, no opening the terminal every time. It
@@ -30,6 +38,10 @@ folder as the working directory.
 - VS Code with the **Remote - WSL** extension (recommended), or any Linux host.
 - `opencode` binary available on `PATH` (or configured via `opencode.server.binaryPath`).
 - An LLM provider configured for opencode (e.g. `opencode auth login`).
+
+**Compatibility**: built and tested on **VS Code** (Desktop and Remote - WSL).
+Editors sharing the VS Code extension API (Cursor, VSCodium) will likely work
+but are **not tested** — no guarantees, use at your own risk.
 
 ## Usage
 

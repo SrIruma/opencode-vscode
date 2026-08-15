@@ -12,6 +12,11 @@ editor, diffs nativos y permisos como notificaciones. Target principal:
 Remote-WSL, donde la extensión vive en el extension host y habla directo con
 el servidor opencode.
 
+Posicionamiento: es una **alternativa experimental** — no compite ni sustituye
+a la extensión oficial de opencode. Se construye sobre el servidor y SDK
+oficiales con funciones más completas y nativas del editor (webview, diff
+nativo, notificaciones de permisos). La oficial sigue siendo el default seguro.
+
 ## Stack y decisiones que no voy a renegar
 
 - Gestor de paquetes: **Yarn 4 (Berry)** vía corepack (`"packageManager": "yarn@4.18.0"`). Los scripts se corren con `yarn <script>`; no se usa npm.
