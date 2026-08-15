@@ -86,6 +86,18 @@ A dedicated CI guard (`.github/workflows/repoctx.yml`) runs `repoctx
 audit --check` on every push/PR and fails the build if the context file
 drifts.
 
+### Publishing to the VS Code Marketplace
+
+Not published yet. To enable it:
+
+1. Register a publisher id: `npx vsce create-publisher sriruma` (only once).
+2. Create an Azure DevOps PAT with **Marketplace > Manage** scope and store it
+   as the `VSCE_PAT` secret in the repository settings.
+3. Tag a release (`git tag v0.2.0 && git push origin v0.2.0`): the release
+   workflow publishes the extension to the Marketplace automatically. Without
+   the `VSCE_PAT` secret the step is skipped and only the GitHub Release is
+   created.
+
 ## How it works
 
 OpenCode is client-server by design: the TUI is just a client of `opencode
