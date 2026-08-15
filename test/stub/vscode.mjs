@@ -6,6 +6,13 @@ class Disposable {
   dispose() {}
 }
 
+class Range {
+  constructor(startLine, startChar, endLine, endChar) {
+    this.start = { line: startLine, character: startChar };
+    this.end = { line: endLine, character: endChar };
+  }
+}
+
 class EventEmitter {
   constructor() {
     this.listeners = new Set();
@@ -56,6 +63,10 @@ function createWebviewPanel(viewType, title, viewColumn, options) {
   };
 }
 
+function createTextEditorDecorationType(options) {
+  return { options, dispose: noop };
+}
+
 const configuration = {
   get(section, fallback) {
     const map = {
@@ -100,16 +111,21 @@ export const vscode = {
     textDocuments: [],
     registerTextDocumentContentProvider: () => new Disposable(),
     onDidOpenTextDocument: () => new Disposable(),
+    onDidCloseTextDocument: () => new Disposable(),
+    onDidChangeTextDocument: () => new Disposable(),
   },
   window: {
     createStatusBarItem,
     createOutputChannel,
     createWebviewPanel,
+    createTextEditorDecorationType,
     activeTextEditor: undefined,
+    visibleTextEditors: [],
     showInformationMessage: async () => undefined,
     showWarningMessage: async () => undefined,
     showErrorMessage: async () => undefined,
     setStatusBarMessage: noop,
+    onDidChangeActiveTextEditor: () => new Disposable(),
   },
   commands: {
     registerCommand,
@@ -118,6 +134,8 @@ export const vscode = {
   },
   StatusBarAlignment: { Left: 1, Right: 2 },
   ViewColumn: { One: 1, Two: 2 },
+  OverviewRulerLane: { Left: 1, Center: 2, Right: 3, Full: 4 },
+  Range,
   EventEmitter,
   Disposable,
 };

@@ -28,6 +28,9 @@ folder as the working directory.
   command.
 - **Native diffs**: review changes in VS Code's real diff editor via a virtual
   document provider.
+- **Inline change highlights**: added/removed lines are highlighted in the
+  editor right after the agent finishes (cleared with *OpenCode: Clear Change
+  Highlights*).
 - **Permissions as notifications**: approve/deny server permission requests
   without leaving the editor.
 - **Server lifecycle managed for you**: connects to an existing `opencode serve`
@@ -73,6 +76,7 @@ but are **not tested** — no guarantees, use at your own risk.
 | `OpenCode: Reference Active File` | Reference the active file. |
 | `OpenCode: Stop Session` | Abort the running session. |
 | `OpenCode: Show Changes` | Open the diff of the current session. |
+| `OpenCode: Clear Change Highlights` | Clear the inline change highlights. |
 | `OpenCode: Reconnect Server` | Restart the connection to the server. |
 
 ## Development

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **Inline change highlights**: after *OpenCode: Show Changes*, the added and
+  removed lines of each changed file are highlighted in the editor (green/red
+  line background + overview ruler), complementing the native diff view. The
+  highlights clear on manual edits, file close, or the new *OpenCode: Clear
+  Change Highlights* command. Line computation is unit-tested
+  (`computeChangedLines` in `src/patch.ts`).
+
 - Community and governance docs: `CONTRIBUTING.md`, `SECURITY.md`,
   `CODE_OF_CONDUCT.md`, issue and PR templates, `docs/donate.md` with a GitHub
   "Sponsor" button (BTC / USDT-TRC20) and README "Community"/"Support"

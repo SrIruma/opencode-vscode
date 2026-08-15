@@ -63,6 +63,10 @@
         "title": "OpenCode: Show Changes"
       },
       {
+        "command": "opencode.clearDecorations",
+        "title": "OpenCode: Clear Change Highlights"
+      },
+      {
         "command": "opencode.reconnectServer",
         "title": "OpenCode: Reconnect Server"
       }

@@ -31,11 +31,12 @@ nativo, notificaciones de permisos). La oficial sigue siendo el default seguro.
 
 ## Mapa del código
 
-- `src/extension.ts` — entrada: activate/deactivate, 7 comandos, status bar y `__internals` (solo para tests).
+- `src/extension.ts` — entrada: activate/deactivate, 8 comandos, status bar y `__internals` (solo para tests).
 - `src/server.ts` — ServerManager: conecta a un `opencode serve` existente o lo levanta en el workspace; SSE con reconexión.
 - `src/sdkClient.ts` — wrapper tipado del SDK: sesiones, chat, revert, permisos, modelo por defecto y diffs.
 - `src/chatPanel.ts` — webview de chat con streaming.
 - `src/patch.ts` y `src/diffs.ts` — reverse-apply de unified diff + provider virtual `opencode-diff` para el diff nativo.
+- `src/decorations.ts` — highlight en vivo de líneas añadidas/eliminadas (decorators + ruler).
 - `src/permissions.ts` — `permission.updated` → notificaciones de VS Code (once, always o reject).
 - `src/context.ts`, `src/protocol.ts`, `src/config.ts`, `src/logger.ts` — contexto del editor, protocolo webview, configuración y log.
 

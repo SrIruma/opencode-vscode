@@ -4,6 +4,7 @@ import type { SdkClient } from "./sdkClient";
 import { buildContextPrompt, getActiveEditorContext } from "./context";
 import { PermissionHandler } from "./permissions";
 import { openSessionDiff, type OriginalContentProvider } from "./diffs";
+import type { DiffDecorations } from "./decorations";
 import type { ModelSummary, PanelMessage, ServerState, WebviewRequest } from "./protocol";
 import { summarizeSessions } from "./protocol";
 
@@ -41,6 +42,7 @@ export class ChatPanel {
     private readonly server: ServerManager,
     private readonly sdk: SdkClient,
     private readonly diffProvider: OriginalContentProvider,
+    private readonly diffDecorations: DiffDecorations,
   ) {
     this.permissionHandler = new PermissionHandler(this.sdk);
     this.server.onEvent(this.handleEvent, this, this.disposables);
@@ -160,6 +162,7 @@ export class ChatPanel {
             this.diffProvider,
             this.sdk,
             this.sessionID,
+            this.diffDecorations,
           );
         }
         break;

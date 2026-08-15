@@ -3,6 +3,7 @@ import { getConfig } from "./config";
 import { ServerManager } from "./server";
 import { SdkClient } from "./sdkClient";
 import { OriginalContentProvider } from "./diffs";
+import { DiffDecorations } from "./decorations";
 import { ChatPanel } from "./chatPanel";
 import { getOutputChannel, log } from "./logger";
 
@@ -10,6 +11,7 @@ let server: ServerManager;
 let sdk: SdkClient;
 let chatPanel: ChatPanel;
 let diffProvider: OriginalContentProvider;
+let diffDecorations: DiffDecorations;
 let statusBar: vscode.StatusBarItem;
 
 async function ensureServer(): Promise<boolean> {
@@ -64,7 +66,12 @@ async function showChanges(): Promise<void> {
     return;
   }
   const { openSessionDiff } = await import("./diffs");
-  await openSessionDiff(diffProvider, sdk, sessionID);
+  await openSessionDiff(diffProvider, sdk, sessionID, diffDecorations);
+}
+
+async function clearDecorations(): Promise<void> {
+  diffDecorations.clearAll();
+  vscode.window.showInformationMessage("OpenCode: change highlights cleared.");
 }
 
 async function reconnectServer(): Promise<void> {
@@ -77,9 +84,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   log("OpenCode extension activating.");
 
   diffProvider = new OriginalContentProvider();
+  diffDecorations = new DiffDecorations();
   server = new ServerManager(context);
   sdk = new SdkClient(server.getClient(), server.url);
-  chatPanel = new ChatPanel(context, server, sdk, diffProvider);
+  chatPanel = new ChatPanel(context, server, sdk, diffProvider, diffDecorations);
 
   server.onStatus((status) => {
     chatPanel.updateServerStatus(status);
@@ -108,8 +116,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     vscode.commands.registerCommand("opencode.referenceActiveFile", referenceActiveFile),
     vscode.commands.registerCommand("opencode.stopSession", stopSession),
     vscode.commands.registerCommand("opencode.showDiff", showChanges),
+    vscode.commands.registerCommand("opencode.clearDecorations", clearDecorations),
     vscode.commands.registerCommand("opencode.reconnectServer", reconnectServer),
     vscode.workspace.registerTextDocumentContentProvider("opencode-diff", diffProvider),
+    vscode.window.onDidChangeActiveTextEditor(() => diffDecorations.applyToActive()),
+    vscode.workspace.onDidCloseTextDocument((doc) => diffDecorations.clear(doc.uri.fsPath)),
+    vscode.workspace.onDidChangeTextDocument((e) => diffDecorations.clear(e.document.uri.fsPath)),
+    diffDecorations,
   );
 
   const cfg = getConfig();
@@ -136,5 +149,8 @@ export const __internals = {
   },
   get diffProvider(): OriginalContentProvider {
     return diffProvider;
+  },
+  get diffDecorations(): DiffDecorations {
+    return diffDecorations;
   },
 };

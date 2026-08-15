@@ -3,6 +3,11 @@ interface Hunk {
   body: string[];
 }
 
+export interface ChangedLines {
+  added: number[];
+  removed: number[];
+}
+
 /**
  * Minimal unified-diff parser. Returns the hunks with their `newStart` position
  * (1-based line in the current file) so we can reverse-apply them.
@@ -64,4 +69,42 @@ export function reverseApplyPatch(current: string, patch?: string): string {
     original.push(cur[idx++]);
   }
   return original.join("\n");
+}
+
+/**
+ * Computes the 1-based line numbers of the current file that a patch marks as
+ * added or removed, so they can be highlighted inline. Added files highlight
+ * every line; deleted files and unparseable patches highlight nothing.
+ */
+export function computeChangedLines(
+  patch: string | undefined,
+  status: "added" | "modified" | "deleted",
+  totalLines: number,
+): ChangedLines {
+  const added: number[] = [];
+  const removed: number[] = [];
+  if (status === "added") {
+    for (let i = 1; i <= totalLines; i++) {
+      added.push(i);
+    }
+    return { added, removed };
+  }
+  if (status === "deleted" || !patch) {
+    return { added, removed };
+  }
+  for (const hunk of parseHunks(patch)) {
+    let line = hunk.newStart;
+    for (const body of hunk.body) {
+      const tag = body[0];
+      if (tag === "+") {
+        added.push(line);
+        line += 1;
+      } else if (tag === "-") {
+        removed.push(line);
+      } else if (tag === " ") {
+        line += 1;
+      }
+    }
+  }
+  return { added, removed };
 }

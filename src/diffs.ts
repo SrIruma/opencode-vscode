@@ -1,7 +1,8 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import type { SdkClient, DiffFile } from "./sdkClient";
-import { reverseApplyPatch } from "./patch";
+import { reverseApplyPatch, computeChangedLines } from "./patch";
+import { DiffDecorations } from "./decorations";
 import { log } from "./logger";
 
 const SCHEME = "opencode-diff";
@@ -84,20 +85,50 @@ export async function openFileDiff(
 }
 
 /**
- * Fetches the session diff and opens native diff editors for every changed file.
+ * Fetches the session diff and opens native diff editors for every changed file,
+ * painting inline change highlights on their editors.
  */
 export async function openSessionDiff(
   provider: OriginalContentProvider,
   sdk: SdkClient,
   sessionID: string,
+  decorations: DiffDecorations,
 ): Promise<void> {
   const files = await sdk.getSessionDiff(sessionID);
   const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? "";
   if (files.length === 0) {
+    decorations.clearAll();
     vscode.window.showInformationMessage("OpenCode: no changes to show for this session.");
     return;
   }
+  decorations.clearAll();
   for (const file of files) {
     await openFileDiff(provider, file, root);
+    void decorateFile(decorations, file, root);
+  }
+}
+
+/**
+ * Highlights the added/removed lines of a changed file on its open editors.
+ */
+async function decorateFile(
+  decorations: DiffDecorations,
+  file: DiffFile,
+  root: string,
+): Promise<void> {
+  if (file.status === "deleted") {
+    return;
+  }
+  const filePath = path.resolve(root, file.path);
+  let content: string;
+  try {
+    content = await readCurrentFile(vscode.Uri.file(filePath));
+  } catch {
+    return;
+  }
+  const totalLines = content.split("\n").length;
+  const { added, removed } = computeChangedLines(file.patch, file.status, totalLines);
+  if (added.length > 0 || removed.length > 0) {
+    decorations.set({ path: filePath, added, removed });
   }
 }

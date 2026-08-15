@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseHunks, reverseApplyPatch } from "../src/patch";
+import { parseHunks, reverseApplyPatch, computeChangedLines } from "../src/patch";
 
 const PATCH_MODIFY = [
   "--- a/src/foo.ts",
@@ -94,4 +94,60 @@ test("reverseApplyPatch preserves a trailing newline", () => {
     "",
   ].join("\n");
   assert.equal(reverseApplyPatch("x\nY\n", patch), "x\ny\n");
+});
+
+test("computeChangedLines marks replaced lines as both added and removed", () => {
+  assert.deepEqual(computeChangedLines(PATCH_MODIFY, "modified", 4), { added: [2], removed: [2] });
+});
+
+test("computeChangedLines walks multiple hunks", () => {
+  const patch = [
+    "--- a/f",
+    "+++ b/f",
+    "@@ -1,3 +1,3 @@",
+    " a",
+    "-b",
+    "+B",
+    " c",
+    "@@ -10,2 +10,2 @@",
+    " j",
+    "-k",
+    "+K",
+    "",
+  ].join("\n");
+  assert.deepEqual(computeChangedLines(patch, "modified", 12), { added: [2, 11], removed: [2, 11] });
+});
+
+test("computeChangedLines flags pure additions", () => {
+  const patch = [
+    "--- a/f",
+    "+++ b/f",
+    "@@ -1,1 +1,2 @@",
+    " a",
+    "+b",
+    "",
+  ].join("\n");
+  assert.deepEqual(computeChangedLines(patch, "modified", 2), { added: [2], removed: [] });
+});
+
+test("computeChangedLines flags pure deletions against the surviving line", () => {
+  const patch = [
+    "--- a/f",
+    "+++ b/f",
+    "@@ -1,2 +1,1 @@",
+    " a",
+    "-b",
+    "",
+  ].join("\n");
+  assert.deepEqual(computeChangedLines(patch, "modified", 1), { added: [], removed: [2] });
+});
+
+test("computeChangedLines marks every line of an added file", () => {
+  assert.deepEqual(computeChangedLines(undefined, "added", 3), { added: [1, 2, 3], removed: [] });
+});
+
+test("computeChangedLines returns nothing for deleted or empty patches", () => {
+  assert.deepEqual(computeChangedLines(undefined, "deleted", 10), { added: [], removed: [] });
+  assert.deepEqual(computeChangedLines("", "modified", 10), { added: [], removed: [] });
+  assert.deepEqual(computeChangedLines("not a patch\n", "modified", 10), { added: [], removed: [] });
 });
