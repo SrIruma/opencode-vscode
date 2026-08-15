@@ -82,8 +82,9 @@ repoctx generate   # regenerate the sections between the repoctx markers
 repoctx audit      # detect ghost commands and stale paths (exit 0 = healthy)
 ```
 
-CI runs `repoctx audit --check` on every push/PR and fails the build if the
-context file drifts.
+A dedicated CI guard (`.github/workflows/repoctx.yml`) runs `repoctx
+audit --check` on every push/PR and fails the build if the context file
+drifts.
 
 ## How it works
 

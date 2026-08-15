@@ -32,14 +32,6 @@ jobs:
       - name: Build extension
         run: npm run build
 
-      - name: Check context files with repoctx
-        run: |
-          VERSION=v0.5.0
-          curl -sSLo /tmp/repoctx \
-            "https://github.com/SrIruma/repoctx/releases/download/${VERSION}/repoctx_linux_amd64"
-          chmod +x /tmp/repoctx
-          /tmp/repoctx audit --check
-
       - name: Package .vsix
         run: npx vsce package --no-dependencies -o opencode-vscode.vsix
 
