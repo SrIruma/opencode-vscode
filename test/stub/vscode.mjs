@@ -9,9 +9,12 @@ class Disposable {
 class EventEmitter {
   constructor() {
     this.listeners = new Set();
-    this.event = (listener) => {
-      this.listeners.add(listener);
-      return new Disposable();
+    this.event = (listener, thisArgs) => {
+      const wrapped = (value) => listener.call(thisArgs, value);
+      this.listeners.add(wrapped);
+      const disposable = new Disposable();
+      disposable.dispose = () => this.listeners.delete(wrapped);
+      return disposable;
     };
   }
   fire(value) {

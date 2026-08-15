@@ -14,6 +14,8 @@
   const contextBarEl = document.getElementById("context-bar");
 
   let sessions = [];
+  let models = [];
+  let currentModel = null;
   let currentSessionID = null;
   let serverStatus = "connecting";
   let running = false;
@@ -150,10 +152,58 @@
 
   function updateStatus() {
     const ok = serverStatus === "connected";
-    modelLabelEl.textContent = ok ? "" : serverStatus === "connecting" ? "connecting\u2026" : "server unavailable";
+    if (!ok) {
+      modelLabelEl.textContent = serverStatus === "connecting" ? "connecting\u2026" : "server unavailable";
+    } else {
+      modelLabelEl.textContent = currentModel ? currentModel.replace("/", " / ") : "select model";
+      modelLabelEl.classList.add("enabled");
+    }
+    modelLabelEl.disabled = !ok || !models.length;
     btnStop.disabled = !running;
     btnStop.classList.toggle("running", running);
     btnSend.disabled = !ok;
+  }
+
+  function showModelPicker() {
+    const overlay = document.createElement("div");
+    overlay.style.cssText =
+      "position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-start;justify-content:center;padding-top:10vh;z-index:10;";
+    const box = document.createElement("div");
+    box.style.cssText =
+      "background:var(--bg);border:1px solid var(--border);border-radius:6px;min-width:340px;max-width:520px;max-height:60vh;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.4);";
+    if (!models.length) {
+      box.textContent = "No models configured.";
+    }
+    const currentKey = currentModel;
+    for (const m of models) {
+      const key = m.providerID + "/" + m.modelID;
+      const row = document.createElement("div");
+      row.style.cssText = "padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);";
+      const name = document.createElement("div");
+      name.textContent = m.name;
+      const provider = document.createElement("div");
+      provider.style.cssText = "font-size:11px;color:var(--muted);";
+      provider.textContent = key;
+      row.appendChild(name);
+      row.appendChild(provider);
+      if (key === currentKey) {
+        row.style.background = "var(--vscode-list-activeSelectionBackground,#04395e)";
+      }
+      row.onmouseenter = () => (row.style.background = "var(--vscode-list-hoverBackground,#2a2d2e)");
+      row.onmouseleave = () => {
+        row.style.background = key === currentKey ? "var(--vscode-list-activeSelectionBackground,#04395e)" : "";
+      };
+      row.addEventListener("click", () => {
+        vscode.postMessage({ type: "selectModel", providerID: m.providerID, modelID: m.modelID });
+        overlay.remove();
+      });
+      box.appendChild(row);
+    }
+    overlay.appendChild(box);
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) overlay.remove();
+    });
+    document.body.appendChild(overlay);
   }
 
   function showSessionsPicker() {
@@ -168,8 +218,24 @@
     }
     for (const s of sessions) {
       const row = document.createElement("div");
-      row.style.cssText = "padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);";
-      row.textContent = s.title;
+      row.style.cssText =
+        "padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;";
+      const title = document.createElement("span");
+      title.style.cssText = "flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
+      title.textContent = s.title;
+      row.appendChild(title);
+      const del = document.createElement("button");
+      del.title = "Delete session";
+      del.innerHTML = "&#10005;";
+      del.style.cssText = "color:var(--muted);font-size:12px;";
+      del.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (confirm(`Delete session "${s.title}"?`)) {
+          vscode.postMessage({ type: "deleteSession", id: s.id });
+          overlay.remove();
+        }
+      });
+      row.appendChild(del);
       if (s.id === currentSessionID) {
         row.style.background = "var(--vscode-list-activeSelectionBackground,#04395e)";
       }
@@ -212,6 +278,7 @@
   btnNew.addEventListener("click", () => vscode.postMessage({ type: "newSession" }));
   btnStop.addEventListener("click", () => vscode.postMessage({ type: "stop" }));
   btnSessions.addEventListener("click", showSessionsPicker);
+  modelLabelEl.addEventListener("click", showModelPicker);
 
   window.addEventListener("message", (e) => {
     const msg = e.data;
@@ -220,11 +287,18 @@
         serverStatus = msg.payload.server;
         running = Boolean(msg.payload.running);
         currentSessionID = msg.payload.sessionID || currentSessionID;
-        if (msg.payload.model) modelLabelEl.title = msg.payload.model;
+        if (msg.payload.model) {
+          currentModel = msg.payload.model;
+          modelLabelEl.title = msg.payload.model;
+        }
         updateStatus();
         break;
       case "sessions":
         sessions = msg.payload || [];
+        break;
+      case "models":
+        models = msg.payload || [];
+        updateStatus();
         break;
       case "history":
         renderHistory(msg.payload || []);
@@ -250,6 +324,14 @@
         banner.textContent = msg.payload.message;
         messagesEl.appendChild(banner);
         messagesEl.scrollTop = messagesEl.scrollHeight;
+        break;
+      case "notice":
+        const info = document.createElement("div");
+        info.className = "notice-banner";
+        info.textContent = msg.payload.message;
+        messagesEl.appendChild(info);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        setTimeout(() => info.remove(), 4000);
         break;
     }
   });
