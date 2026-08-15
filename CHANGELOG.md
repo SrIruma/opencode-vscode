@@ -27,7 +27,7 @@ All notable changes to this project will be documented in this file.
   and emits `yarn run ...` commands in `AGENTS.md`.
 - **No Marketplace publishing.** The extension is not published to the VS Code
   Marketplace; distribution happens through GitHub Releases only. The release
-  workflow now just builds, tests and attaches the `.vsix` to the tag, the
+  workflow now just builds, tests and attaches the VSIX package to the tag, the
   `publish` script was dropped and the `clean` script no longer relies on a
   shell glob that breaks under zsh (`find` + `-delete` instead).
 - CI/release workflows bumped to `actions/checkout@v5` and

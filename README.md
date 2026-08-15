@@ -108,12 +108,12 @@ drifts.
 ### Releases
 
 This extension is **not** published to the VS Code Marketplace. Every tagged
-release publishes a `.vsix` artifact to the
+release publishes an installable VSIX package to the
 [GitHub Releases](https://github.com/SrIruma/opencode-vscode/releases) page:
 
 1. Tag a release: `git tag v0.2.0 && git push origin v0.2.0`.
 2. The release workflow builds the extension, runs the tests and attaches the
-   `.vsix` to the GitHub Release (with auto-generated notes).
+   VSIX package to the GitHub Release (with auto-generated notes).
 3. Install it in VS Code from the command line:
 
    ```bash
