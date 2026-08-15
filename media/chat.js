@@ -86,6 +86,16 @@
           tools.className = "tools";
           tools.appendChild(toolChip(`\u00b7 ${item.toolCount} tool calls`, "completed"));
           el.appendChild(tools);
+          const revert = document.createElement("button");
+          revert.className = "revert-btn";
+          revert.textContent = "Revert changes";
+          revert.title = "Undo the changes made by this message";
+          revert.addEventListener("click", () => {
+            if (confirm("Revert the changes made by this message?")) {
+              vscode.postMessage({ type: "revertMessage", messageID: item.messageID });
+            }
+          });
+          el.appendChild(revert);
         }
       } else {
         bubble.textContent = item.text;
